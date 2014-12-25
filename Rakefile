@@ -10,6 +10,7 @@ task :fetch_documentation do
     wget --mirror
          --convert-links
          --page-requisites
+         -nH
          --directory-prefix=#{target_directory}
          #{DOCUMENTATION_URL}
     END_OF_COMMAND
