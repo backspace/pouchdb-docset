@@ -5,7 +5,8 @@ DOCUMENTATION_URL = 'http://pouchdb.com/'
 
 task default: [
   :fetch_documentation,
-  :build_index
+  :strip_surroundings,
+  :build_index,
 ]
 
 task :fetch_documentation do
@@ -21,6 +22,12 @@ task :fetch_documentation do
   system wget_command.gsub(/\n/, "")
 end
 
+task :strip_surroundings do
+  Dir.glob(documents_path("/**/*.html")).each do |path|
+    strip_surroundings(path)
+  end
+end
+
 task :build_index do
   db_path = resources_path "/docSet.dsidx"
   db = SQLite3::Database.new db_path
@@ -30,6 +37,17 @@ task :build_index do
 end
 
 private
+def strip_surroundings(path)
+  file = File.open(path)
+  document = Nokogiri::HTML(file)
+
+  document.css("header, div.icons").remove
+
+  file.close
+
+  File.open(path, 'w') {|f| f.print(document.to_html)}
+end
+
 def create_docset_table(db)
   db.execute <<-SQL
     CREATE TABLE IF NOT EXISTS searchIndex(id INTEGER PRIMARY KEY, name TEXT, type TEXT, path TEXT);
