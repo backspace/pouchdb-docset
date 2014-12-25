@@ -56,27 +56,26 @@ def create_docset_table(db)
 end
 
 def parse_docset_into_db(db)
-  parse_guides_file_into_db "/guides/index.html", db
-  parse_guides_file_into_db "/learn.html", db
+  parse_file_into_db "/api.html", "Method", db
+  parse_file_into_db "/guides/index.html", "Guide", db
+  parse_file_into_db "/learn.html", "Guide", db
 end
 
-def parse_guides_file_into_db(file_path, db)
-  guides_document_path = documents_path(file_path)
-  guides_file = File.open(guides_document_path)
-  parsed_guides = Nokogiri::HTML(guides_file)
-  guides_file.close
+def parse_file_into_db(relative_file_path, type, db)
+  file_path = documents_path(relative_file_path)
+  file = File.open(file_path)
+  document = Nokogiri::HTML(file)
+  file.close
 
-  parent_directory = "/#{file_path.split("/")[0..-2].join("/")}"
-  puts parent_directory
+  parent_directory = "/#{relative_file_path.split("/")[0..-2].join("/")}"
 
-  parsed_guides.css('#sidebar ul.nav li a').each do |guide|
-    name = guide.content
-    path = "#{parent_directory}/#{guide.attr('href')}"
+  document.css('#sidebar ul.nav li a').each do |item|
+    name = item.content
+    path = "#{parent_directory}/#{item.attr('href')}"
     insert_statement = <<-SQL
-      INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES ('#{name}', 'Guide', '#{path}');
+      INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES ('#{name}', '#{type}', '#{path}');
     SQL
 
-    puts insert_statement
     db.execute insert_statement
   end
 end
