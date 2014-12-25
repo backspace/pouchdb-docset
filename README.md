@@ -13,6 +13,8 @@ Requirements:
 * imagemagick
 
 ```
+    git clone https://github.com/backspace/pouchdb-docset
+    cd pouchdb-docset
     bundle install  
     rake
 ```
