@@ -38,18 +38,27 @@ def create_docset_table(db)
 end
 
 def parse_docset_into_db(db)
-  guides_document_path = documents_path "/guides/index.html"
+  parse_guides_file_into_db "/guides/index.html", db
+  parse_guides_file_into_db "/learn.html", db
+end
+
+def parse_guides_file_into_db(file_path, db)
+  guides_document_path = documents_path(file_path)
   guides_file = File.open(guides_document_path)
-  parsed_guides= Nokogiri::HTML(guides_file)
+  parsed_guides = Nokogiri::HTML(guides_file)
   guides_file.close
+
+  parent_directory = "/#{file_path.split("/")[0..-2].join("/")}"
+  puts parent_directory
 
   parsed_guides.css('#sidebar ul.nav li a').each do |guide|
     name = guide.content
-    path = "/guides/#{guide.attr('href')}"
+    path = "#{parent_directory}/#{guide.attr('href')}"
     insert_statement = <<-SQL
       INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES ('#{name}', 'Guide', '#{path}');
     SQL
 
+    puts insert_statement
     db.execute insert_statement
   end
 end
