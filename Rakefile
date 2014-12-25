@@ -1,5 +1,6 @@
 require 'nokogiri'
 require 'sqlite3'
+require 'uri'
 
 DOCUMENTATION_URL = 'http://pouchdb.com/'
 
@@ -7,6 +8,7 @@ task default: [
   :fetch_documentation,
   :strip_surroundings,
   :build_index,
+  :add_api_table_of_contents
 ]
 
 task :fetch_documentation do
@@ -34,6 +36,24 @@ task :build_index do
 
   create_docset_table(db)
   parse_docset_into_db(db)
+end
+
+task :add_api_table_of_contents do
+  path = documents_path("/api.html")
+  file = File.open(path)
+  document = Nokogiri::HTML(file)
+
+  document.css("a.h2.anchor").each do |anchor|
+    new_anchor = Nokogiri::XML::Node.new "a", document
+    new_anchor['class'] = 'dashAnchor'
+    new_anchor['name'] = "//apple_ref/cpp/Method/#{URI.escape(anchor.content).gsub("/", "%2F")}"
+
+    anchor.add_previous_sibling(new_anchor)
+  end
+
+  file.close
+
+  File.open(path, 'w') {|f| f.print(document.to_html)}
 end
 
 private
