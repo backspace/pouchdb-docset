@@ -10,6 +10,7 @@ task default: [
   :build_index,
   :add_api_table_of_contents,
   :copy_plist,
+  :copy_readme,
   :create_archive,
   :generate_icons
 ]
@@ -61,6 +62,10 @@ end
 
 task :copy_plist do
   system "cp Info.plist #{contents_path}"
+end
+
+task :copy_readme do
+  system "cp README.md dist/README.md"
 end
 
 task :create_archive do
