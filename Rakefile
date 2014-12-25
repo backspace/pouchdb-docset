@@ -9,6 +9,7 @@ task default: [
   :strip_surroundings,
   :build_index,
   :add_api_table_of_contents,
+  :copy_plist,
   :create_archive,
   :generate_icons
 ]
@@ -56,6 +57,10 @@ task :add_api_table_of_contents do
   file.close
 
   File.open(path, 'w') {|f| f.print(document.to_html)}
+end
+
+task :copy_plist do
+  system "cp Info.plist #{contents_path}"
 end
 
 task :create_archive do
@@ -121,8 +126,12 @@ def parse_file_into_db(relative_file_path, type, db)
   end
 end
 
+def contents_path(path = "")
+  "#{Dir.getwd}/dist/PouchDB.docset/Contents"
+end
+
 def resources_path(path = "")
-  "#{Dir.getwd}/dist/PouchDB.docset/Contents/Resources#{path}"
+  "#{contents_path}/Resources#{path}"
 end
 
 def documents_path(path = "")
