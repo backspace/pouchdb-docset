@@ -22,6 +22,7 @@ task :fetch_documentation do
          --convert-links
          --page-requisites
          -nH
+         --exclude-directories=blog,2014
          --directory-prefix=#{target_directory}
          #{DOCUMENTATION_URL}
     END_OF_COMMAND

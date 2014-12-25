@@ -21,4 +21,4 @@ The docset will be generated at `dist/PouchDB.docset`.
 
 ## Known issues
 
-All API headings are marked as methods.
+All API headings are marked as methods. The initial fetch of the documentation manually ignores the `2014` directory because I couldn’t get `wget`’s `--exclude-directories` to use wildcards.
