@@ -70,7 +70,7 @@ task :copy_readme do
 end
 
 task :create_archive do
-  system "tar --exclude='.DS_Store' -czf dist/PouchDB.tgz dist/PouchDB.docset"
+  system "cd dist; tar --exclude='.DS_Store' -czf PouchDB.tgz PouchDB.docset"
 end
 
 task :generate_icons do
