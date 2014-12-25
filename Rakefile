@@ -9,7 +9,7 @@ task default: [
 ]
 
 task :fetch_documentation do
-  target_directory = "#{Dir.getwd}/PouchDB.docset/Contents/Resources/Documents"
+  target_directory = documents_path
   wget_command = <<-END_OF_COMMAND
     wget --mirror
          --convert-links
@@ -22,7 +22,7 @@ task :fetch_documentation do
 end
 
 task :build_index do
-  db_path = "#{Dir.getwd}/PouchDB.docset/Contents/Resources/docSet.dsidx"
+  db_path = resources_path "/docSet.dsidx"
   db = SQLite3::Database.new db_path
 
   create_docset_table(db)
@@ -38,7 +38,7 @@ def create_docset_table(db)
 end
 
 def parse_docset_into_db(db)
-  guides_document_path = "#{Dir.getwd}/PouchDB.docset/Contents/Resources/Documents/guides/index.html"
+  guides_document_path = documents_path "/guides/index.html"
   guides_file = File.open(guides_document_path)
   parsed_guides= Nokogiri::HTML(guides_file)
   guides_file.close
@@ -52,4 +52,12 @@ def parse_docset_into_db(db)
 
     db.execute insert_statement
   end
+end
+
+def resources_path(path = "")
+  "#{Dir.getwd}/PouchDB.docset/Contents/Resources#{path}"
+end
+
+def documents_path(path = "")
+  "#{resources_path("/Documents")}#{path}"
 end
