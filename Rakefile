@@ -8,7 +8,8 @@ task default: [
   :fetch_documentation,
   :strip_surroundings,
   :build_index,
-  :add_api_table_of_contents
+  :add_api_table_of_contents,
+  :generate_icons
 ]
 
 task :fetch_documentation do
@@ -54,6 +55,21 @@ task :add_api_table_of_contents do
   file.close
 
   File.open(path, 'w') {|f| f.print(document.to_html)}
+end
+
+task :generate_icons do
+  favicon_path = documents_path("/static/img/mark.svg")
+
+  {16 => "icon.png", 32 => "icon@2x.png"}.each do |size, filename|
+    convert_command = <<-END_OF_COMMAND
+      convert -resize x#{size}
+              -gravity center
+              -extent #{size}x#{size}
+              #{favicon_path}
+              dist/#{filename}
+    END_OF_COMMAND
+    system convert_command.gsub(/\n/, "")
+  end
 end
 
 private
