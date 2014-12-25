@@ -101,7 +101,7 @@ def parse_file_into_db(relative_file_path, type, db)
 end
 
 def resources_path(path = "")
-  "#{Dir.getwd}/PouchDB.docset/Contents/Resources#{path}"
+  "#{Dir.getwd}/dist/PouchDB.docset/Contents/Resources#{path}"
 end
 
 def documents_path(path = "")
