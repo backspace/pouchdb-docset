@@ -9,6 +9,7 @@ task default: [
   :strip_surroundings,
   :build_index,
   :add_api_table_of_contents,
+  :create_archive,
   :generate_icons
 ]
 
@@ -55,6 +56,10 @@ task :add_api_table_of_contents do
   file.close
 
   File.open(path, 'w') {|f| f.print(document.to_html)}
+end
+
+task :create_archive do
+  system "tar --exclude='.DS_Store' -czf dist/PouchDB.tgz dist/PouchDB.docset"
 end
 
 task :generate_icons do
