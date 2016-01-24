@@ -119,13 +119,13 @@ def parse_file_into_db(relative_file_path, type, db)
   document = Nokogiri::HTML(file)
   file.close
 
-  parent_directory = "/#{relative_file_path.split("/")[0..-2].join("/")}"
+  parent_directory = "#{relative_file_path.split("/")[0..-2].join("/")}"
 
   document.css('#sidebar ul.nav li a').each do |item|
     name = item.content
-    path = "#{parent_directory}/#{item.attr('href')}"
+    path = "#{parent_directory}/#{item.attr('href')}"[1..-1]
     insert_statement = <<-SQL
-      INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES ('#{name}', '#{type}', '#{path}');
+      INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES ("#{name}", "#{type}", "#{path}");
     SQL
 
     db.execute insert_statement
