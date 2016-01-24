@@ -125,7 +125,7 @@ def parse_file_into_db(relative_file_path, type, db)
     name = item.content
     path = "#{parent_directory}/#{item.attr('href')}"
     insert_statement = <<-SQL
-      INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES ('#{name}', '#{type}', '#{path}');
+      INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES ("#{name}", "#{type}", "#{path}");
     SQL
 
     db.execute insert_statement
